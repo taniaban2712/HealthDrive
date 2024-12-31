@@ -31,6 +31,9 @@ const patientSchema= new mongoose.Schema({
         type: String,
         required: true,
     },
+    refreshToken:{
+        type: String,
+    }
 },{timestamps: true})
 
 module.exports=mongoose.model("Patient", patientSchema);

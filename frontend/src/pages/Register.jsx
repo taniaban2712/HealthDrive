@@ -14,9 +14,11 @@ const onFinish = (values) => {
   console.log(patientData);
 
   
+
+  
 };
 const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
+  message.error("Patient cannot be registered");
 };
 
 const bloodGroupItems = [

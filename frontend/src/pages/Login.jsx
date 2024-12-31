@@ -1,14 +1,40 @@
-import React from 'react'
+import React from "react";
+import {useNavigate} from "react-router-dom";
 import { Button, Checkbox, Form, Input, Select } from "antd";
+import axios from "axios";
+import {message} from "antd";
+// import { verifyRefreshToken } from "../../../backend/src/utils/jwt";
 
-const onFinish = (values) => {
-    console.log("Success:", values);
+const Login = () => {
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (values) => {
+    //console.log(values);
+
+    const { email, password } = values;
+
+    try {
+      const response = await axios.get("http://localhost:3000/login", {
+        email,
+        password,
+      });
+      message.success("Login Successful");
+      // verifyRefreshToken(response.data.auth);
+      navigate('/dashboard');
+      
+    } catch (error) {
+      console.error("Error:", error);
+      message.error("Login Failed");
+    }
   };
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-const Login = () => {
   return (
     <div className="mt-40">
       <h1 className="text-center mb-8 text-3xl text-teal-900 font-semibold">
@@ -17,11 +43,9 @@ const Login = () => {
       <div className="justify-center flex">
         <Form
           className="w-1/2"
-          onFinish={onFinish}
+          onFinish={handleSubmit}
           onFinishFailed={onFinishFailed}
         >
-          
-
           <Form.Item
             label="Email"
             name="email"
@@ -34,7 +58,6 @@ const Login = () => {
           >
             <Input placeholder="Email" />
           </Form.Item>
-          
 
           <Form.Item
             label="Password"
@@ -46,7 +69,7 @@ const Login = () => {
               },
             ]}
           >
-            <Input.Password placeholder='Password'/>
+            <Input.Password placeholder="Password" />
           </Form.Item>
 
           {/* <Form.Item
@@ -77,7 +100,7 @@ const Login = () => {
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

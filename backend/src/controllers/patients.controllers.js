@@ -1,12 +1,11 @@
 const hash = require("bcryptjs");
 const patient = require("../models/patients.models.js");
-
+const jwt = require("jsonwebtoken");
 
 const registerPatient = async (req, res) => {
-  if (!req.body) {
-    return res
-      .status(400)
-      .json({ message: "Email and password are required." });
+  if (req.body.some((field) => field?.trim() === "")) {
+    //checking if all fields are present
+    return res.status(400).json({ message: "All fields are required." });
   }
 
   try {
@@ -17,6 +16,7 @@ const registerPatient = async (req, res) => {
     console.log(data);
     if (!data) {
       const hashedPassword = await hash.hash(password, 10);
+      console.log(hashedPassword);
       const patientData = await patient
         .create({
           name: req.body.name,
@@ -25,7 +25,7 @@ const registerPatient = async (req, res) => {
           age: req.body.age,
           bloodGroup: req.body.bloodGroup,
           gender: req.body.gender,
-          password: req.body.password,
+          password: hashedPassword,
         })
         .then(async (patientData) => {
           await patientData.save();
@@ -34,13 +34,11 @@ const registerPatient = async (req, res) => {
             message: "Patient registered successfully",
           });
         });
+    } else {
+      res.status(400).json({
+        message: "Patient already exists",
+      });
     }
-    else{
-        res.status(400).json({
-            message: "Patient already exists"
-        })
-    }
-
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({
@@ -49,31 +47,38 @@ const registerPatient = async (req, res) => {
   }
 };
 
+const loginPatient = async (req, res) => {
+  //console.log(req.body);
 
-const loginPatient= async(req, res)=>{
-    console.log(req.body);
-
-    try{
-        const {email, password}=req.body;
-        const data=await patient.findOne({"email": email});
-        if(!data){
-            res.status(404).json({
-                message: "Patient doesnt exist"
-            })
-        }
-        else{
-
-            res.status(200).json({
-                message: "Patient exists"
-            })
-        }
+  try {
+    const { email, password } = req.body;
+    console.log("email", email);    
+    console.log("password", password);
+    const data = await patient.findOne({ email: email });
+    if (!data) {
+      return res.status(404).json({
+        message: "Patient doesnt exist",
+      });
+    } else {
+        console.log(data);
+      const patientData = {
+        user: data.id,
+      };
+    //   const token = jwt.sign(patientData, process.env.ACCESS_TOKEN_SECRET);
+      
+      res.status(200).json({
+        message: "Patient exists",
+        auth: token,
+        email: data.email,
+      });
     }
-    catch (error) {
-        console.error("Error:", error);
-        return res.status(500).json({
-          message: "Server error",
-        });
-    }
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
 };
 
 module.exports = registerPatient; // Correct export syntax
+module.exports = loginPatient; // Correct export syntax
