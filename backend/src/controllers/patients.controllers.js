@@ -112,8 +112,34 @@ const GetPatient= async(req,res)=>{
   }
 };
 
+const UpdatePatient=async(req,res)=>{
+  const patientId=req.params.id;
+  const updatedData=req.body;;
+  console.log(patientId);
+
+  const repeatedUser=await patient.findOne({email:updatedData.email});
+  const repeatedUser2=await patient.findOne({contact:updatedData.contactNumber});
+  if(repeatedUser || repeatedUser2){
+    return res.status(400).json({message:"Email already exists"});
+  }
+  
+  const user={
+    id:patientId,
+    name:updatedData.name,
+    email:updatedData.email,
+    contactNumber:updatedData.contactNumber,
+    age:updatedData.age,
+    bloodGroup:updatedData.bloodGroup,
+  }
+
+  const updatedPatient= await patient.findByIdAndUpdate(patientId,updatedData,{new:true});
+  res.status(200).json(user);
+}
+
+
 module.exports = {
   RegisterPatient,
   LoginPatient,
-  GetPatient
+  GetPatient,
+  UpdatePatient
 };

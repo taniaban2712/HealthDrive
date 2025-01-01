@@ -1,10 +1,30 @@
 import React, { useState } from "react";
-import { Layout, Menu, Drawer, Button, Avatar, Dropdown, Card, Space } from "antd";
-import { HomeOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  Layout,
+  Menu,
+  Drawer,
+  Button,
+  Avatar,
+  Dropdown,
+  Card,
+  Space,
+} from "antd";
+import {
+  HomeOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  UserOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import Appointments from "../pages/PatientPages/Appointments";
 import Pharmacies from "../pages/PatientPages/Pharmacies";
 import Reports from "../pages/PatientPages/Reports";
 import Transactions from "../pages/PatientPages/Transactions";
+import PatientCard from "./PatientCard";
+import MedicationLiquidIcon from "@mui/icons-material/MedicationLiquid";
+import VaccinesIcon from "@mui/icons-material/Vaccines";
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
+import PaidIcon from '@mui/icons-material/Paid';
 
 const { Header, Content, Sider } = Layout;
 
@@ -12,20 +32,20 @@ const MenuItems = [
   {
     title: "Appointments",
     key: "1",
-    icon: <HomeOutlined />,
+    icon: <MedicationLiquidIcon />,
     element: <Appointments />,
   },
   {
     title: "Pharmacy",
     key: "2",
-    icon: <HomeOutlined />,
+    icon: <VaccinesIcon />,
     element: <Pharmacies />,
   },
-  { title: "Reports", key: "3", icon: <HomeOutlined />, element: <Reports /> },
+  { title: "Reports", key: "3", icon: <DocumentScannerIcon/>, element: <Reports /> },
   {
     title: "Transactions",
     key: "4",
-    icon: <HomeOutlined />,
+    icon: <PaidIcon />,
     element: <Transactions />,
   },
 ];
@@ -84,18 +104,15 @@ const Navbar = (data) => {
         open={open}
         style={{ backgroundColor: "#c2d6c4" }}
       >
-       
-          <Card
-            title="Name"
-            extra={<a href="#">Edit</a>}
-            style={{
-              width: 330,
-              height: 100,
-            }}
-          >
-            <p>{data.data.name}</p>
-          </Card>
-        
+        <PatientCard data={data.data} />
+        <div className="flex gap-3 items-center">
+          <Button
+            icon={<LogoutOutlined />}
+            onClick={onClose}
+            style={{ marginTop: "20" }}
+          />
+          <p className="font-bold">Logout</p>
+        </div>
       </Drawer>
 
       {/* Content Section */}
