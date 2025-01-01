@@ -8,14 +8,14 @@ const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION;
 
 // Function to generate an access token
 const generateAccessToken = (user) => {
-  return jwt.sign({ userId: user.id }, ACCESS_TOKEN_SECRET, {
+  return jwt.sign({ userId: user.id, role: user.role }, ACCESS_TOKEN_SECRET, {
     expiresIn: ACCESS_TOKEN_EXPIRATION,
   });
 };
 
 // Function to generate a refresh token
 const generateRefreshToken = (user) => {
-  return jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, {
+  return jwt.sign({ userId: user.id, role: user.role }, REFRESH_TOKEN_SECRET, {
     expiresIn: REFRESH_TOKEN_EXPIRATION,
   });
 };

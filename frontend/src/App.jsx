@@ -3,21 +3,26 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Register from "./pages/PatientAuth/PatientRegister";
+import Login from "./pages/PatientAuth/PatientLogin";
+import Dashboard from "./pages/PatientPages/Dashboard";
+import LandingPage from "./pages/LandingPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <LandingPage/>,
+  },
+  {
+    path: "/patient",
     element: <Register/>,
   },
   {
-    path: "/login",
+    path: "/patient/login",
     element: <Login/>,
   },
   {
-    path: "/dashboard",
+    path: "/patient/dashboard/:id",
     element: <Dashboard/>,
   },
 ]);

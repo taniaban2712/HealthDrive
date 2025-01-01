@@ -1,33 +1,46 @@
 import React from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import axios from "axios";
-import {message} from "antd";
+import { message } from "antd";
 // import { verifyRefreshToken } from "../../../backend/src/utils/jwt";
+
+const Roles = [
+  { title: "Doctor", key: "1" },
+  { title: "Patient", key: "2" },
+];
 
 const Login = () => {
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
   // const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     //console.log(values);
-
-    const { email, password } = values;
+    setLoading(true);
+    const patientData = {
+      email: values.email,
+      password: values.password,
+    };
 
     try {
-      const response = await axios.get("http://localhost:3000/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/patient/login",
+        patientData
+      );
       message.success("Login Successful");
+      console.log(response.data);
+
       // verifyRefreshToken(response.data.auth);
-      navigate('/dashboard');
-      
+      navigate(`/patient/dashboard/${response.data.id}`);
     } catch (error) {
       console.error("Error:", error);
       message.error("Login Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,6 +84,23 @@ const Login = () => {
           >
             <Input.Password placeholder="Password" />
           </Form.Item>
+          {/* <Form.Item
+            label="Role"
+            name="role"
+            className="w-full"
+            rules={[
+              {
+                required: true,
+                message: "Please choose your role!",
+              },
+            ]}
+          >
+            <Select placeholder="Select a role" allowClear>
+              {Roles.map((item) => (
+                <div key={item.title}>{item.title}</div>
+              ))}
+            </Select>
+          </Form.Item> */}
 
           {/* <Form.Item
             name="remember"
@@ -92,7 +122,7 @@ const Login = () => {
             </Button>
             <p className="text-center mt-3">
               Donot have an account?{" "}
-              <a href="/" className="font-semibold">
+              <a href="/patient" className="font-semibold">
                 Register Now
               </a>
             </p>

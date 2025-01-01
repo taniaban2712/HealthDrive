@@ -14,6 +14,6 @@ app.use(cookieParser());
 const patientRouter = require("./routers/patients.routes.js");
 
 // Use patientRouter under /api/auth
-app.use('/', patientRouter);
+app.use('/patient', patientRouter);
 
 module.exports = app;

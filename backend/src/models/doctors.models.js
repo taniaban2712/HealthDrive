@@ -19,4 +19,4 @@ const doctorSchema= new mongoose.Schema({
     }
 },{timestamps: true})
 
-export const doctor=mongoose.model("Doctor", doctorSchema);
+module.exports=mongoose.model("Doctor", doctorSchema);
