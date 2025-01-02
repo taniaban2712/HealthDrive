@@ -28,27 +28,6 @@ import PaidIcon from '@mui/icons-material/Paid';
 
 const { Header, Content, Sider } = Layout;
 
-const MenuItems = [
-  {
-    title: "Appointments",
-    key: "1",
-    icon: <MedicationLiquidIcon />,
-    element: <Appointments />,
-  },
-  {
-    title: "Pharmacy",
-    key: "2",
-    icon: <VaccinesIcon />,
-    element: <Pharmacies />,
-  },
-  { title: "Reports", key: "3", icon: <DocumentScannerIcon/>, element: <Reports /> },
-  {
-    title: "Transactions",
-    key: "4",
-    icon: <PaidIcon />,
-    element: <Transactions />,
-  },
-];
 
 const Navbar = (data) => {
   console.log("navbar data", data);
@@ -60,6 +39,29 @@ const Navbar = (data) => {
     setOpen(false);
   };
   const [selectedMenu, setSelectedMenu] = useState("1");
+
+  const MenuItems = [
+    {
+      title: "Appointments",
+      key: "1",
+      icon: <MedicationLiquidIcon />,
+      element: <Appointments data={data.data}/>,
+    },
+    {
+      title: "Pharmacy",
+      key: "2",
+      icon: <VaccinesIcon />,
+      element: <Pharmacies />,
+    },
+    { title: "Reports", key: "3", icon: <DocumentScannerIcon/>, element: <Reports /> },
+    {
+      title: "Transactions",
+      key: "4",
+      icon: <PaidIcon />,
+      element: <Transactions />,
+    },
+  ];
+  
 
   return (
     <Layout style={{ minHeight: "100vh" }}>

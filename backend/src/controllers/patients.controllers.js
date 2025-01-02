@@ -133,7 +133,8 @@ const UpdatePatient=async(req,res)=>{
   }
 
   const updatedPatient= await patient.findByIdAndUpdate(patientId,updatedData,{new:true});
-  res.status(200).json(user);
+  if(updatedPatient) return res.status(200).json(user);
+  else return res.status(500).json({message:"Server error"});
 }
 
 
