@@ -9,6 +9,7 @@ import AppointmentCard from "../../components/AppointmentCard";
 
 const Appointments = (data) => {
   const [open, setOpen] = useState(false);
+  const patientId = data.data._id;
   const showDrawer = () => {
     setOpen(true);
   };
@@ -19,7 +20,7 @@ const Appointments = (data) => {
   const [appointmentData, setAppointmentData] = useState([]);
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/appointment`)
+      .get(`http://localhost:3000/appointment/patient/${patientId}`)
       .then((response) => {
         //console.log('response',response.data)
         setAppointmentData(response.data);
@@ -28,7 +29,7 @@ const Appointments = (data) => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [patientId]);
 
   const [approvedAppointments, setApprovedAppointments] = useState([]);
   const [rejectedAppointments, setRejectedAppointments] = useState([]);
@@ -57,6 +58,11 @@ const Appointments = (data) => {
     setPendingAppointments(pending);
   }, [appointmentData]);
 
+  approvedAppointments.sort((appointment1, appointment2)=>{
+    if(appointment1.date!=appointment2.date) return appointment1.date - appointment2.date;
+    return appointment1.time - appointment2.time;
+  })
+
   console.log("Approved Appointments", approvedAppointments);
   console.log("Rejected Appointments", rejectedAppointments);
   console.log("Pending Appointments", pendingAppointments);
@@ -72,7 +78,7 @@ const Appointments = (data) => {
           }}
           className="md:w-3/4 bg-gray-200 flex justify-between items-center p-6"
         >
-          <h1 className="text-lg">Appointments</h1>
+          <h1 className="text-2xl font-semibold">Appointments</h1>
           <button
             className="flex items-center gap-2 bg-[#4c7450] h-10 w-52 pl-4 text-white"
             onClick={showDrawer}
@@ -125,16 +131,17 @@ const Appointments = (data) => {
       {/* PENDING APPOINTMENTS */}
       <div className="flex flex-col gap-4 pt-14">
         {pendingAppointments.length > 0 ? (
-        <div className="flex flex-col gap-4 p-6">
-          <h1 className="text-lg">Pending Appointments</h1>
-          {pendingAppointments.map((appointment, index) => (
-           <AppointmentCard key={index} appointment={appointment} />
-          ))}
-        </div>
-      ) : (
-        <div></div>
-      )}
-
+          <div className="flex flex-col gap-4 p-3">
+            <h1 className="text-lg">Pending Appointments</h1>
+            <div className="flex flex-wrap gap-1">
+              {pendingAppointments.map((appointment, index) => (
+                <AppointmentCard key={index} appointment={appointment} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
       {/* REJECTED APPOINTMENTS */}
     </div>

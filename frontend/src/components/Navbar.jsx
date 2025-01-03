@@ -84,9 +84,8 @@ const Navbar = (data) => {
         >
           <div className="logo" />
           <p
-            class
-            name="text-white text-2xl font-bold"
-            style={{ float: "left", color: "white", fontSize: "20px" }}
+            classname="text-white text-4xl font-bold"
+            style={{ float: "left", color: "white", fontSize: "25px" }}
           >
             HealthDrive
           </p>

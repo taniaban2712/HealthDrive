@@ -5,6 +5,6 @@ const getAllAppointments = require('../controllers/appointments.controllers.js')
 
 // Add appointment route
 router.route('/add').post(addAppointment);
-router.route('/').get(getAllAppointments);
+router.route('/patient/:id').get(getAllAppointments);
 
 module.exports = router;  // Correct export syntax

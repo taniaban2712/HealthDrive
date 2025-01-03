@@ -31,7 +31,7 @@ const AddAppointment=async(req,res)=>{
 
 const GetAllAppointments=async(req,res)=>{
     try{
-        const appointmentData=await appointment.find();
+        const appointmentData=await appointment.find({patientId: req.params.id});
         res.status(200).json(appointmentData);
     }catch(error){
         console.error("Error:", error);
@@ -40,5 +40,6 @@ const GetAllAppointments=async(req,res)=>{
         });
     }
 }
+
 
 module.exports={AddAppointment, GetAllAppointments};

@@ -57,6 +57,7 @@ const AddAppointmentCard = (patientData) => {
         appointmentData
       );
       message.success("Appointment added successfully!");
+      location.reload();
     } catch (error) {
       message.error("There was an error adding the appointment");
       console.error(error);

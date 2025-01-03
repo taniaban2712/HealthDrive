@@ -15,4 +15,16 @@ const GetAllDoctor=async(req,res)=>{
     }
 }
 
-module.exports={GetAllDoctor};
+const GetDoctorById=async(req, res)=>{
+    try{
+        const doctorData=await doctor.findById(req.params.id);
+        res.status(200).json(doctorData);
+    }catch(error){
+        console.error("Error:", error);
+        return res.status(500).json({
+            message: "Server error",
+        });
+    }
+}
+
+module.exports={GetAllDoctor, GetDoctorById};
