@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Checkbox, Form, Input, Select, message } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -29,6 +29,19 @@ const Roles = [
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const token = sessionStorage.getItem("authToken"); // Check if user is logged in (token present)
+    const id = sessionStorage.getItem("id");
+    
+  
+    useEffect(() => {
+      if (token && id) {
+        navigate(`/patient/dashboard/${id}`);
+      }
+      else{
+        navigate('/patient/login');
+      }
+    }, [token, id,navigate]);
 
   const onFinish = async (values) => {
     setLoading(true);
