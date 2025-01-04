@@ -23,11 +23,10 @@ import Transactions from "../pages/PatientPages/Transactions";
 import PatientCard from "./PatientCard";
 import MedicationLiquidIcon from "@mui/icons-material/MedicationLiquid";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
-import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
-import PaidIcon from '@mui/icons-material/Paid';
+import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
+import PaidIcon from "@mui/icons-material/Paid";
 
 const { Header, Content, Sider } = Layout;
-
 
 const Navbar = (data) => {
   console.log("navbar data", data);
@@ -38,6 +37,13 @@ const Navbar = (data) => {
   const onClose = () => {
     setOpen(false);
   };
+
+  const logOut = () => {
+    sessionStorage.removeItem("authToken"); // Remove the token
+    sessionStorage.removeItem("id"); // Remove the user id
+    window.location.href = "/patient/login"; // Redirect to the login page
+    
+  };
   const [selectedMenu, setSelectedMenu] = useState("1");
 
   const MenuItems = [
@@ -45,7 +51,7 @@ const Navbar = (data) => {
       title: "Appointments",
       key: "1",
       icon: <MedicationLiquidIcon />,
-      element: <Appointments data={data.data}/>,
+      element: <Appointments data={data.data} />,
     },
     {
       title: "Pharmacy",
@@ -53,7 +59,12 @@ const Navbar = (data) => {
       icon: <VaccinesIcon />,
       element: <Pharmacies />,
     },
-    { title: "Reports", key: "3", icon: <DocumentScannerIcon/>, element: <Reports /> },
+    {
+      title: "Reports",
+      key: "3",
+      icon: <DocumentScannerIcon />,
+      element: <Reports />,
+    },
     {
       title: "Transactions",
       key: "4",
@@ -61,7 +72,6 @@ const Navbar = (data) => {
       element: <Transactions />,
     },
   ];
-  
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -109,7 +119,7 @@ const Navbar = (data) => {
         <div className="flex gap-3 items-center">
           <Button
             icon={<LogoutOutlined />}
-            onClick={onClose}
+            onClick={logOut}
             style={{ marginTop: "20" }}
           />
           <p className="font-bold">Logout</p>

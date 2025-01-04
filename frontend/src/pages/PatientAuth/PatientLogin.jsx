@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import axios from "axios";
@@ -18,6 +18,22 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check if a token exists in localStorage or sessionStorage
+    const token = sessionStorage.getItem('authToken'); // or sessionStorage.getItem('authToken')
+    const id=sessionStorage.getItem('id');
+
+    console.log(id, token);
+
+    // If a token is found, redirect to the dashboard
+    if (token && id) {
+      navigate(`/patient/dashboard/${id}`);  // Redirect to dashboard (or any authenticated page)
+    }
+    else{
+      navigate('/patient/login');
+    }
+  }, [navigate]);
+
   const handleSubmit = async (values) => {
     //console.log(values);
     setLoading(true);
@@ -33,6 +49,9 @@ const Login = () => {
       );
       message.success("Login Successful");
       console.log(response.data);
+      const token = response.data.authToken; // Assuming response contains the token
+      sessionStorage.setItem("authToken", token); // Save token in sessionStorage
+      sessionStorage.setItem("id", response.data.id);
 
       // verifyRefreshToken(response.data.auth);
       navigate(`/patient/dashboard/${response.data.id}`);

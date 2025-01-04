@@ -4,7 +4,6 @@ const doctor = require("../models/doctors.models.js");
 const jwt = require("jsonwebtoken");
 
 const RegisterPatient = async (req, res) => {
-
   // if (.some((field) => field?.trim() === "")) {
   //   //checking if all fields are present
   //   return res.status(400).json({ message: "All fields are required." });
@@ -19,10 +18,7 @@ const RegisterPatient = async (req, res) => {
       //patient data
       const hashedPassword = await hash.hash(password, 10);
       // console.log(hashedPassword);
-      const token = jwt.sign(
-        { email: email },
-        process.env.ACCESS_TOKEN_SECRET
-      );
+      const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET);
       const patientData = await patient
         .create({
           name: req.body.name,
@@ -38,7 +34,7 @@ const RegisterPatient = async (req, res) => {
           await patientData.save();
 
           //JWT TOKEN
-          
+
           console.log("done");
           res.status(200).json({
             message: "Patient registered successfully",
@@ -62,6 +58,8 @@ const RegisterPatient = async (req, res) => {
 const LoginPatient = async (req, res) => {
   console.log(req.body);
 
+  
+
   try {
     const { email, password } = req.body;
     // console.log("email:", email);
@@ -81,10 +79,11 @@ const LoginPatient = async (req, res) => {
           { email: email },
           process.env.ACCESS_TOKEN_SECRET
         );
+        
         console.log("done");
         res.status(200).json({
           message: "Patient logged in successfully",
-          auth: token,
+          authToken: token,
           id: patientData._id,
         });
       }
@@ -97,50 +96,58 @@ const LoginPatient = async (req, res) => {
   }
 };
 
-const GetPatient= async(req,res)=>{
-  const patientId=req.params.id;
+
+const GetPatient = async (req, res) => {
+  const patientId = req.params.id;
   console.log(patientId);
-  try{
-    const patientData=await patient.findById({_id:patientId}).select("-password -refreshToken");
+  try {
+    const patientData = await patient
+      .findById({ _id: patientId })
+      .select("-password -refreshToken");
     console.log(patientData);
-    if(patientData) return res.status(200).json(patientData);
-    else return res.status(404).json({message:"Patient not found"});
-  }
-  catch(error){
-    console.error("Error:",error);
-    return res.status(500).json({message:"Server error"});
+    if (patientData) return res.status(200).json(patientData);
+    else return res.status(404).json({ message: "Patient not found" });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-const UpdatePatient=async(req,res)=>{
-  const patientId=req.params.id;
-  const updatedData=req.body;;
+const UpdatePatient = async (req, res) => {
+  const patientId = req.params.id;
+  const updatedData = req.body;
   console.log(patientId);
 
-  const repeatedUser=await patient.findOne({email:updatedData.email});
-  const repeatedUser2=await patient.findOne({contact:updatedData.contactNumber});
-  if(repeatedUser || repeatedUser2){
-    return res.status(400).json({message:"Email already exists"});
-  }
-  
-  const user={
-    id:patientId,
-    name:updatedData.name,
-    email:updatedData.email,
-    contactNumber:updatedData.contactNumber,
-    age:updatedData.age,
-    bloodGroup:updatedData.bloodGroup,
+  const repeatedUser = await patient.findOne({ email: updatedData.email });
+  const repeatedUser2 = await patient.findOne({
+    contact: updatedData.contactNumber,
+  });
+  if (repeatedUser || repeatedUser2) {
+    return res.status(400).json({ message: "Email already exists" });
   }
 
-  const updatedPatient= await patient.findByIdAndUpdate(patientId,updatedData,{new:true});
-  if(updatedPatient) return res.status(200).json(user);
-  else return res.status(500).json({message:"Server error"});
-}
+  const user = {
+    id: patientId,
+    name: updatedData.name,
+    email: updatedData.email,
+    contactNumber: updatedData.contactNumber,
+    age: updatedData.age,
+    bloodGroup: updatedData.bloodGroup,
+  };
 
+  const updatedPatient = await patient.findByIdAndUpdate(
+    patientId,
+    updatedData,
+    { new: true }
+  );
+  if (updatedPatient) return res.status(200).json(user);
+  else return res.status(500).json({ message: "Server error" });
+};
 
 module.exports = {
   RegisterPatient,
   LoginPatient,
   GetPatient,
-  UpdatePatient
+  UpdatePatient,
+  
 };
