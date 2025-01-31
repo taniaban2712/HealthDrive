@@ -39,7 +39,7 @@ const Register = () => {
         navigate(`/patient/dashboard/${id}`);
       }
       else{
-        navigate('/patient/login');
+        navigate('/patient');
       }
     }, [token, id,navigate]);
 
@@ -65,10 +65,17 @@ const Register = () => {
 
       // If the request is successful, show success message
       message.success("Data submitted successfully!");
+      const sendEmail=await axios.post(
+        "http://localhost:3000/patient/sendmail",
+        {email:`${patientData.email}`}
+      )
       console.log(patientData); // You can log the response from the backend if needed
     } catch (error) {
       // If an error occurs, show an error message
-      message.error("There was an error submitting the form");
+      if(error.status==400){
+        message.error("User Already Exists!");
+      }
+      else message.error("There was an error submitting the form");
       console.error(error);
     } finally {
       setLoading(false); // Set loading to false once the request is completed

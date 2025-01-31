@@ -15,7 +15,7 @@ const LandingPage = () => {
       navigate(`/patient/dashboard/${id}`);
     }
     else{
-      navigate('/patient/login');
+      navigate('/');
     }
   }, [token, id,navigate]);
 

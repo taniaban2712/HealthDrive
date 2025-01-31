@@ -6,21 +6,44 @@ import AddIcon from "@mui/icons-material/Add";
 import AddAppointmentCard from "../../components/AddAppointmentCard";
 import axios from "axios";
 import AppointmentCard from "../../components/AppointmentCard";
+import EditAppointmentCard from "../../components/EditAppointmentCard";
 
 const Appointments = (data) => {
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const time = new Date().getHours();
+  console.log("nowtime", time);
+
+  let greeting = "";
+  if (time < 12) greeting = "Morning";
+  else if (time >= 12 && time <= 16) greeting = "Afternoon";
+  else greeting = "Evening";
+
   const patientId = data.data._id;
   const showDrawer = () => {
     setOpen(true);
+    console.log("Drawer Open");
+  };
+  const showEditDrawer = () => {
+    setEditOpen(true);
+    console.log("Drawer Open");
   };
   const onClose = () => {
     setOpen(false);
+    console.log("Drawer Closed");
+  };
+  const onEditClose = () => {
+    setEditOpen(false);
+    console.log("Drawer Closed");
   };
 
   const [appointmentData, setAppointmentData] = useState([]);
+  const token = sessionStorage.getItem("authToken");
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/appointment/patient/${patientId}`)
+      .get(`http://localhost:3000/appointment/patient/${patientId}`, {
+        headers: { authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         //console.log('response',response.data)
         setAppointmentData(response.data);
@@ -58,10 +81,11 @@ const Appointments = (data) => {
     setPendingAppointments(pending);
   }, [appointmentData]);
 
-  approvedAppointments.sort((appointment1, appointment2)=>{
-    if(appointment1.date!=appointment2.date) return appointment1.date - appointment2.date;
+  approvedAppointments.sort((appointment1, appointment2) => {
+    if (appointment1.date != appointment2.date)
+      return appointment1.date - appointment2.date;
     return appointment1.time - appointment2.time;
-  })
+  });
 
   console.log("Approved Appointments", approvedAppointments);
   console.log("Rejected Appointments", rejectedAppointments);
@@ -72,9 +96,8 @@ const Appointments = (data) => {
       <div>
         <Header
           style={{
-            position: "fixed",
             zIndex: 1,
-            width: "76%",
+            width: "100%",
           }}
           className="md:w-3/4 bg-gray-200 flex justify-between items-center p-6"
         >
@@ -84,7 +107,7 @@ const Appointments = (data) => {
             onClick={showDrawer}
           >
             <AddIcon />
-            <p> Add new Appointment</p>
+            <p className=""> Add new Appointment</p>
           </button>
         </Header>
         <Drawer
@@ -97,6 +120,10 @@ const Appointments = (data) => {
           <AddAppointmentCard patientData={data.data} />
         </Drawer>
       </div>
+
+      <p className="p-2 text-3xl pt-3 text-[#4c7450] font-semibold">
+        Good {greeting}, {data.data.name}!
+      </p>
 
       {/* Appointment Cards */}
       {/*APPROVED APPOINTMENTS*/}
@@ -129,13 +156,28 @@ const Appointments = (data) => {
       </div>
 
       {/* PENDING APPOINTMENTS */}
-      <div className="flex flex-col gap-4 pt-14">
+      <div className="flex flex-col gap-4 ">
         {pendingAppointments.length > 0 ? (
-          <div className="flex flex-col gap-4 p-3">
+          <div className="flex flex-col gap-4 p-2">
             <h1 className="text-lg">Pending Appointments</h1>
             <div className="flex flex-wrap gap-1">
               {pendingAppointments.map((appointment, index) => (
-                <AppointmentCard key={index} appointment={appointment} />
+                <div
+                  key={index}
+                  className="cursor-pointer" // This makes the card clickable
+                  onClick={showEditDrawer} // Pass appointment data to the handler
+                >
+                  <AppointmentCard appointment={appointment} />
+                  <Drawer
+                    title="Edit Appointment"
+                    placement="right"
+                    open={editOpen} // Controlled by the state `editOpen`
+                    onClose={onEditClose} // This triggers `onEditClose` to set `editOpen` to `false`
+                    width={500}
+                  >
+                    <EditAppointmentCard appointmentData={appointment} />
+                  </Drawer>
+                </div>
               ))}
             </div>
           </div>

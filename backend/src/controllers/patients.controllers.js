@@ -57,9 +57,6 @@ const RegisterPatient = async (req, res) => {
 
 const LoginPatient = async (req, res) => {
   console.log(req.body);
-
-  
-
   try {
     const { email, password } = req.body;
     // console.log("email:", email);
@@ -79,7 +76,7 @@ const LoginPatient = async (req, res) => {
           { email: email },
           process.env.ACCESS_TOKEN_SECRET
         );
-        
+
         console.log("done");
         res.status(200).json({
           message: "Patient logged in successfully",
@@ -95,7 +92,6 @@ const LoginPatient = async (req, res) => {
     });
   }
 };
-
 
 const GetPatient = async (req, res) => {
   const patientId = req.params.id;
@@ -149,5 +145,4 @@ module.exports = {
   LoginPatient,
   GetPatient,
   UpdatePatient,
-  
 };

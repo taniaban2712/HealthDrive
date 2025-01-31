@@ -12,32 +12,33 @@ import {
   TimePicker,
 } from "antd";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 
-const AddAppointmentCard = (patientData) => {
-  const patientId = patientData.patientData._id;
+const EditAppointmentCard = (appointmentData) => {
+  console.log(appointmentData.appointmentData);
+  const appointmentId=appointmentData.appointmentData._id;
+  console.log(appointmentId);
   const [doctorId, setDoctorId] = useState(null);
-  console.log(patientData.patientData);
-
+  const disablePastDates = (current) => {
+    // Disable dates before today
+    return current && current.isBefore(dayjs().startOf("day"), "day");
+  };
   const [doctorData, setDoctorData] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/doctor`)
-    .then((response) => {
-      //console.log('response',response.data)
-      setDoctorData(response.data);
-      console.log('doctor data', doctorData);
-
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    axios
+      .get(`http://localhost:3000/doctor`)
+      .then((response) => {
+        //console.log('response',response.data)
+        setDoctorData(response.data);
+        console.log("doctor data", doctorData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [doctorId]);
 
- // console.log('Doctor Data',doctorData);
- const token=sessionStorage.getItem('authToken')
-
+  const token=sessionStorage.getItem('authToken');
   const onFinish = async (values) => {
     
     const appointmentData = {
@@ -53,12 +54,12 @@ const AddAppointmentCard = (patientData) => {
     console.log(appointmentData);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/appointment/add",
+      const response = await axios.patch(
+        `http://localhost:3000/appointment/add/${appointmentId}`,
         appointmentData,
         {headers: { authorization: `Bearer ${token}`}}
       );
-      message.success("Appointment added successfully!");
+      message.success("Appointment Edited successfully!");
       location.reload();
     } catch (error) {
       message.error("There was an error adding the appointment");
@@ -69,22 +70,18 @@ const AddAppointmentCard = (patientData) => {
     console.log("Failed:", errorInfo);
   };
 
-  const disablePastDates = (current) => {
-    // Disable dates before today
-    return current && current.isBefore(dayjs().startOf("day"), "day");
-  };
-
   return (
     <div>
       <Card>
         <Form
           initialValues={{
-            patientName: patientData.patientData.name,
-            patientContact: patientData.patientData.contactNumber,
-            patientEmail: patientData.patientData.email,
+            patientName: appointmentData.appointmentData.patientName,
+            patientContact: appointmentData.appointmentData.patientContact,
+            patientEmail: appointmentData.appointmentData.patientEmail,
+            description: appointmentData.appointmentData.description,
           }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          //   onFinish={onFinish}
+          //   onFinishFailed={onFinishFailed}
         >
           <Form.Item
             label="Patient Name"
@@ -170,4 +167,4 @@ const AddAppointmentCard = (patientData) => {
   );
 };
 
-export default AddAppointmentCard;
+export default EditAppointmentCard;
