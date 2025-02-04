@@ -15,9 +15,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 const EditAppointmentCard = (appointmentData) => {
-  console.log(appointmentData.appointmentData);
+
+  const [form] = Form.useForm();
+  const [formData, setFormData]=useState([])
+  
   const appointmentId=appointmentData.appointmentData._id;
-  console.log(appointmentId);
+  const patientData=appointmentData.appointmentData;
+  console.log("appointmentdata",patientData);
   const [doctorId, setDoctorId] = useState(null);
   const disablePastDates = (current) => {
     // Disable dates before today
@@ -38,6 +42,25 @@ const EditAppointmentCard = (appointmentData) => {
       });
   }, [doctorId]);
 
+  useEffect(() => {
+    // Example: Fetching data after 2 seconds (could be an API call)
+    setTimeout(() => {
+      const fetchedData = {
+        patientName: patientData.patientName,
+        patientEmail:patientData.patientEmail,
+        patientContact:patientData.patientContact,
+        
+      };
+
+      // Update form data state
+      setFormData(fetchedData);
+
+      // Dynamically set form values using setFieldsValue
+      form.setFieldsValue(fetchedData);
+    }, 2000);
+  }, [form]);
+
+  
   const token=sessionStorage.getItem('authToken');
   const onFinish = async (values) => {
     
@@ -69,17 +92,26 @@ const EditAppointmentCard = (appointmentData) => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+  const updateFormValues = () => {
+    form.setFieldsValue({
+      patientName: patientData.patientName,
+      email: 'updatedemail@example.com',
+    });
+  };
+  
 
   return (
     <div>
       <Card>
         <Form
-          initialValues={{
-            patientName: appointmentData.appointmentData.patientName,
-            patientContact: appointmentData.appointmentData.patientContact,
-            patientEmail: appointmentData.appointmentData.patientEmail,
-            description: appointmentData.appointmentData.description,
-          }}
+        form={form}
+          // initialValues={{
+          //   patientName: patientData.patientName,
+          //   patientContact: patientData.patientContact,
+          //   patientEmail: patientData.patientEmail,
+          //   description: patientData.description,
+          // }}
+          
           //   onFinish={onFinish}
           //   onFinishFailed={onFinishFailed}
         >
@@ -92,6 +124,7 @@ const EditAppointmentCard = (appointmentData) => {
                 message: "Please input the patient name!",
               },
             ]}
+            value={patientData.patientName}
           >
             <Input placeholder="Enter Your Name" />
           </Form.Item>

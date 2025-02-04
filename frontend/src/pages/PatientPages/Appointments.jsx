@@ -11,6 +11,8 @@ import EditAppointmentCard from "../../components/EditAppointmentCard";
 const Appointments = (data) => {
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment]=useState([]);
+
   const time = new Date().getHours();
   console.log("nowtime", time);
 
@@ -24,8 +26,10 @@ const Appointments = (data) => {
     setOpen(true);
     console.log("Drawer Open");
   };
-  const showEditDrawer = () => {
+  const showEditDrawer = (appointmentData) => {
     setEditOpen(true);
+    console.log("carddata",appointmentData)
+    setSelectedAppointment(appointmentData);
     console.log("Drawer Open");
   };
   const onClose = () => {
@@ -34,6 +38,7 @@ const Appointments = (data) => {
   };
   const onEditClose = () => {
     setEditOpen(false);
+    setSelectedAppointment([]);
     console.log("Drawer Closed");
   };
 
@@ -119,6 +124,15 @@ const Appointments = (data) => {
         >
           <AddAppointmentCard patientData={data.data} />
         </Drawer>
+        <Drawer
+          title="Edit Appointment"
+          placement="right"
+          open={editOpen} // Controlled by the state `editOpen`
+          onClose={onEditClose} // This triggers `onEditClose` to set `editOpen` to `false`
+          width={500}
+        >
+          <EditAppointmentCard appointmentData={selectedAppointment} />
+        </Drawer>
       </div>
 
       <p className="p-2 text-3xl pt-3 text-[#4c7450] font-semibold">
@@ -165,18 +179,9 @@ const Appointments = (data) => {
                 <div
                   key={index}
                   className="cursor-pointer" // This makes the card clickable
-                  onClick={showEditDrawer} // Pass appointment data to the handler
+                  onClick={()=>showEditDrawer(appointment)} // Pass appointment data to the handler
                 >
                   <AppointmentCard appointment={appointment} />
-                  <Drawer
-                    title="Edit Appointment"
-                    placement="right"
-                    open={editOpen} // Controlled by the state `editOpen`
-                    onClose={onEditClose} // This triggers `onEditClose` to set `editOpen` to `false`
-                    width={500}
-                  >
-                    <EditAppointmentCard appointmentData={appointment} />
-                  </Drawer>
                 </div>
               ))}
             </div>

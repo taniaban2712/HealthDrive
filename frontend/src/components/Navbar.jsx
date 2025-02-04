@@ -25,6 +25,8 @@ import MedicationLiquidIcon from "@mui/icons-material/MedicationLiquid";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
 import PaidIcon from "@mui/icons-material/Paid";
+import ChatBot from "../pages/PatientPages/ChatBot";
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 const { Header, Content, Sider } = Layout;
 
@@ -70,6 +72,12 @@ const Navbar = (data) => {
       key: "4",
       icon: <PaidIcon />,
       element: <Transactions />,
+    },
+    {
+      title: "Check your symptoms",
+      key: "5",
+      icon: <ChatBubbleIcon/>,
+      element: <ChatBot/>,
     },
   ];
 
@@ -129,7 +137,7 @@ const Navbar = (data) => {
       {/* Content Section */}
       <Layout style={{ marginTop: 64 }}>
         {/* Sider for Desktop View */}
-        <Sider width={200} className="site-layout-background" theme="light">
+        <Sider width={220} className="site-layout-background" theme="light">
           <Menu
             mode="inline"
             defaultSelectedKeys={["1"]}
